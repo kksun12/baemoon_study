@@ -19,7 +19,7 @@ export default function AuthCallback() {
 
         if (data.session) {
           // 로그인 성공
-          router.push("/board");
+          router.push("/");
         } else {
           // 세션이 없으면 로그인 페이지로
           router.push("/auth");
