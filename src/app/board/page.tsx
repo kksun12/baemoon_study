@@ -66,7 +66,7 @@ export default function BoardPage() {
                 추억 남기기
               </h2>
               {user ? (
-                <BoardForm />
+                <BoardForm user={user} />
               ) : (
                 <div className="text-center py-8">
                   <div className="text-4xl mb-4">🔒</div>
@@ -93,7 +93,7 @@ export default function BoardPage() {
                 <span className="mr-2">📝</span>
                 여행 이야기들
               </h2>
-              <Board />
+              <Board user={user} />
             </div>
           </div>
         </div>

@@ -53,6 +53,14 @@ npm run dev
 - ✅ 실시간 상태 관리
 - ✅ 반응형 디자인
 
+## 🗺️ 여행 계획 기능
+
+- ✅ 숙소 추가/수정/삭제
+- ✅ 네이버 지도 링크로 위치 확인
+- ✅ 체크인/체크아웃 날짜 관리
+- ✅ 숙소 상세 정보 관리
+- ✅ 목록과 위치 뷰 전환
+
 ## 🎨 디자인 특징
 
 - 🌊 여름 여행 테마
@@ -67,19 +75,24 @@ src/
 ├── app/                 # Next.js App Router
 │   ├── auth/           # 인증 페이지
 │   ├── board/          # 게시판 페이지
+│   ├── travel/         # 여행 계획 페이지
 │   └── layout.tsx      # 루트 레이아웃
 ├── components/         # React 컴포넌트
 │   ├── Board.tsx       # 게시글 목록
 │   ├── BoardForm.tsx   # 게시글 작성 폼
 │   ├── SignIn.tsx      # 로그인 폼
-│   └── SignUp.tsx      # 회원가입 폼
+│   ├── SignUp.tsx      # 회원가입 폼
+│   ├── AccommodationMap.tsx    # 숙소 위치 컴포넌트
+│   ├── AccommodationForm.tsx   # 숙소 관리 폼
+│   └── AccommodationList.tsx   # 숙소 목록
 ├── hooks/              # 커스텀 훅
 │   └── useAuth.ts      # 인증 훅
 ├── lib/                # 유틸리티
 │   └── supabase.ts     # Supabase 클라이언트
 ├── store/              # Zustand 스토어
 │   ├── authStore.ts    # 인증 상태
-│   └── boardStore.ts   # 게시판 상태
+│   ├── boardStore.ts   # 게시판 상태
+│   └── accommodationStore.ts   # 숙소 상태
 └── styles/             # 스타일
     └── globals.css     # 전역 스타일
 ```
