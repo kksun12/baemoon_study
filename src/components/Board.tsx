@@ -1,8 +1,14 @@
 "use client";
+import { useEffect } from "react";
 import { useBoardStore } from "../store/boardStore";
 
 export default function Board() {
   const posts = useBoardStore((state) => state.posts);
+  const fetchPosts = useBoardStore((state) => state.fetchPosts);
+
+  useEffect(() => {
+    fetchPosts();
+  }, [fetchPosts]);
 
   const getRandomEmoji = () => {
     const emojis = ["🌴", "🌊", "☀️", "🏖️", "🍹", "🎵", "🌅", "🌙", "🏄‍♂️", "🚣‍♀️"];
