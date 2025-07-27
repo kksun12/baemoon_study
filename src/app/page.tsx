@@ -1,17 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useAuthStore } from "../store/authStore";
-import { supabase } from "../lib/supabase";
-import { useEffect } from "react";
+import { useAuth } from "../hooks/useAuth";
 
 export default function Home() {
-  const { user, setUser } = useAuthStore();
+  const { user, loading, signOut } = useAuth();
 
   // ✅ 로그아웃 함수
   const handleLogout = async () => {
-    await supabase.auth.signOut();
-    setUser(null); // Zustand 상태도 초기화
+    await signOut();
   };
 
   return (
@@ -61,7 +58,35 @@ export default function Home() {
               </div>
             </Link>
 
-            {user ? (
+            <a
+              href="https://map.naver.com/p/search/%ED%97%A4%EC%9D%B4%EB%A6%AC%EC%95%A0%ED%8E%9C%EC%85%98"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <div className="group relative inline-block">
+                <div className="absolute -inset-1 bg-gradient-to-r from-orange-600 to-red-600 rounded-full blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
+                <button className="relative px-12 py-4 bg-white rounded-full leading-none flex items-center divide-x divide-gray-600">
+                  <span className="flex items-center space-x-2">
+                    <span className="text-gray-800 font-semibold text-lg">
+                      숙소 찾기
+                    </span>
+                    <span className="text-gray-600">🗺️</span>
+                  </span>
+                </button>
+              </div>
+            </a>
+
+            {loading ? (
+              // 로딩 중일 때 스켈레톤 버튼
+              <div className="relative px-12 py-4 bg-white rounded-full leading-none flex items-center divide-x divide-gray-600 opacity-50">
+                <span className="flex items-center space-x-2">
+                  <span className="text-gray-800 font-semibold text-lg">
+                    로딩 중...
+                  </span>
+                  <span className="text-gray-600">⏳</span>
+                </span>
+              </div>
+            ) : user ? (
               // ✅ 로그인 상태일 때 로그아웃 버튼
               <button
                 onClick={handleLogout}

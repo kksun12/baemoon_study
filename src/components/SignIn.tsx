@@ -2,8 +2,7 @@
 import { useState } from "react";
 import { supabase } from "../lib/supabase";
 import { useRouter } from "next/navigation";
-import { useAuthStore } from "../store/authStore";
-
+import { useAuth } from "../hooks/useAuth";
 
 export default function SignIn({ onToggle }: { onToggle: () => void }) {
   const [email, setEmail] = useState("");
@@ -11,7 +10,7 @@ export default function SignIn({ onToggle }: { onToggle: () => void }) {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const router = useRouter();
-  const { setUser } = useAuthStore();
+  const { user } = useAuth();
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,7 +26,6 @@ export default function SignIn({ onToggle }: { onToggle: () => void }) {
       if (error) {
         setMessage(error.message);
       } else {
-        setUser(data.user);
         setMessage("로그인 성공!");
         setEmail("");
         setPassword("");
@@ -46,24 +44,24 @@ export default function SignIn({ onToggle }: { onToggle: () => void }) {
 
     try {
       const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
+        provider: "google",
         options: {
           redirectTo: `${window.location.origin}/auth/callback`,
           queryParams: {
-            access_type: 'offline',
-            prompt: 'consent',
+            access_type: "offline",
+            prompt: "consent",
           },
-        }
+        },
       });
 
       if (error) {
-        console.error('Google OAuth error:', error);
+        console.error("Google OAuth error:", error);
         setMessage(`Google 로그인 오류: ${error.message}`);
       } else {
         setMessage("Google 로그인을 진행합니다...");
       }
     } catch (error) {
-      console.error('Google OAuth error:', error);
+      console.error("Google OAuth error:", error);
       setMessage("Google 로그인 중 오류가 발생했습니다.");
     } finally {
       setLoading(false);
