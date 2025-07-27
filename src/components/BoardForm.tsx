@@ -1,13 +1,22 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useBoardStore } from "../store/boardStore";
+import { User } from "@supabase/supabase-js";
 
-export default function BoardForm() {
+interface BoardFormProps {
+  user: User;
+}
+
+export default function BoardForm({ user }: BoardFormProps) {
   const [author, setAuthor] = useState("");
   const [content, setContent] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const addPost = useBoardStore((state) => state.addPost);
-  const fetchPosts = useBoardStore((state) => state.fetchPosts);
+
+  useEffect(() => {
+    // 이름이 있으면 이름, 없으면 이메일
+    setAuthor(user.user_metadata?.name || user.email || "");
+  }, [user]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -15,9 +24,7 @@ export default function BoardForm() {
 
     setIsSubmitting(true);
     await addPost(author, content);
-    setAuthor("");
     setContent("");
-    await fetchPosts();
     setIsSubmitting(false);
   };
 
@@ -32,10 +39,9 @@ export default function BoardForm() {
         <input
           type="text"
           className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm"
-          placeholder="당신의 이름을 입력하세요"
           value={author}
-          onChange={(e) => setAuthor(e.target.value)}
-          required
+          disabled
+          readOnly
         />
       </div>
 

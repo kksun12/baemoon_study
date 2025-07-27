@@ -12,9 +12,11 @@ type BoardState = {
   posts: Post[];
   fetchPosts: () => Promise<void>;
   addPost: (author: string, content: string) => Promise<void>;
+  deletePost: (id: string) => Promise<void>;
+  updatePost: (id: string, content: string) => Promise<void>; // 추가
 };
 
-export const useBoardStore = create<BoardState>((set) => ({
+export const useBoardStore = create<BoardState>((set, get) => ({
   posts: [],
   fetchPosts: async () => {
     const { data, error } = await supabase
@@ -48,6 +50,33 @@ export const useBoardStore = create<BoardState>((set) => ({
           },
           ...state.posts,
         ],
+      }));
+    }
+  },
+  deletePost: async (id) => {
+    const { error } = await supabase
+      .from("posts")
+      .delete()
+      .eq("id", id);
+    if (!error) {
+      set((state) => ({
+        posts: state.posts.filter((post) => post.id !== id),
+      }));
+    }
+  },
+  updatePost: async (id, content) => {
+    const { data, error } = await supabase
+      .from("posts")
+      .update({ content })
+      .eq("id", id)
+      .select();
+    if (!error && data && data[0]) {
+      set((state) => ({
+        posts: state.posts.map((post) =>
+          post.id === id
+            ? { ...post, content: data[0].content, createdAt: data[0].created_at }
+            : post
+        ),
       }));
     }
   },
