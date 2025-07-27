@@ -1,6 +1,7 @@
 import { create } from "zustand";
+import { supabase } from "../lib/supabase";
 
-type Post = {
+export type Post = {
   id: string;
   author: string;
   content: string;
@@ -9,21 +10,45 @@ type Post = {
 
 type BoardState = {
   posts: Post[];
-  addPost: (author: string, content: string) => void;
+  fetchPosts: () => Promise<void>;
+  addPost: (author: string, content: string) => Promise<void>;
 };
 
 export const useBoardStore = create<BoardState>((set) => ({
   posts: [],
-  addPost: (author, content) =>
-    set((state) => ({
-      posts: [
-        ...state.posts,
-        {
-          id: Math.random().toString(36).substr(2, 9),
-          author,
-          content,
-          createdAt: new Date().toISOString(),
-        },
-      ],
-    })),
+  fetchPosts: async () => {
+    const { data, error } = await supabase
+      .from("posts")
+      .select("id, author, content, created_at")
+      .order("created_at", { ascending: false });
+    if (!error && data) {
+      set({
+        posts: data.map((row: any) => ({
+          id: row.id,
+          author: row.author,
+          content: row.content,
+          createdAt: row.created_at,
+        })),
+      });
+    }
+  },
+  addPost: async (author, content) => {
+    const { data, error } = await supabase
+      .from("posts")
+      .insert([{ author: author, content }])
+      .select();
+    if (!error && data && data[0]) {
+      set((state) => ({
+        posts: [
+          {
+            id: data[0].id,
+            author: data[0].author,
+            content: data[0].content,
+            createdAt: data[0].created_at,
+          },
+          ...state.posts,
+        ],
+      }));
+    }
+  },
 }));
