@@ -1,13 +1,16 @@
 "use client";
 import { useState } from "react";
 import { supabase } from "../lib/supabase";
+import { useRouter } from "next/navigation";
+import { useAuthStore } from "../store/authStore";
 
 export default function SignIn({ onToggle }: { onToggle: () => void }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
-
+  const router = useRouter();
+  const { setUser } = useAuthStore();
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -22,9 +25,11 @@ export default function SignIn({ onToggle }: { onToggle: () => void }) {
       if (error) {
         setMessage(error.message);
       } else {
+        setUser(data.user);
         setMessage("로그인 성공!");
         setEmail("");
         setPassword("");
+        router.push("/");
       }
     } catch (error) {
       setMessage("로그인 중 오류가 발생했습니다.");

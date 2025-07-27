@@ -1,15 +1,23 @@
+"use client";
+
 import Link from "next/link";
+import { useAuthStore } from "../store/authStore";
+import { supabase } from "../lib/supabase";
+import { useEffect } from "react";
 
 export default function Home() {
+  const { user, setUser } = useAuthStore();
+
+  // ✅ 로그아웃 함수
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setUser(null); // Zustand 상태도 초기화
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-400 via-blue-500 to-purple-600 relative overflow-hidden">
-      {/* 배경 장식 요소들 */}
-      <div className="absolute inset-0">
-        <div className="absolute top-20 left-10 w-20 h-20 bg-yellow-300 rounded-full opacity-20 animate-bounce"></div>
-        <div className="absolute top-40 right-20 w-16 h-16 bg-pink-300 rounded-full opacity-30 animate-pulse"></div>
-        <div className="absolute bottom-20 left-1/4 w-12 h-12 bg-green-300 rounded-full opacity-25 animate-bounce"></div>
-        <div className="absolute bottom-40 right-1/3 w-14 h-14 bg-orange-300 rounded-full opacity-20 animate-pulse"></div>
-      </div>
+      {/* 배경 장식 */}
+      <div className="absolute inset-0">{/* ...생략된 데코레이션들 */}</div>
 
       {/* 메인 콘텐츠 */}
       <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-4">
@@ -37,7 +45,7 @@ export default function Home() {
             </p>
           </div>
 
-          {/* CTA 버튼들 */}
+          {/* CTA 버튼 */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link href="/board">
               <div className="group relative inline-block">
@@ -53,19 +61,35 @@ export default function Home() {
               </div>
             </Link>
 
-            <Link href="/auth">
-              <div className="group relative inline-block">
-                <div className="absolute -inset-1 bg-gradient-to-r from-green-600 to-blue-600 rounded-full blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
-                <button className="relative px-12 py-4 bg-white rounded-full leading-none flex items-center divide-x divide-gray-600">
-                  <span className="flex items-center space-x-2">
-                    <span className="text-gray-800 font-semibold text-lg">
-                      로그인/회원가입
-                    </span>
-                    <span className="text-gray-600">🔑</span>
+            {user ? (
+              // ✅ 로그인 상태일 때 로그아웃 버튼
+              <button
+                onClick={handleLogout}
+                className="relative px-12 py-4 bg-white rounded-full leading-none flex items-center divide-x divide-gray-600 hover:bg-red-100 transition"
+              >
+                <span className="flex items-center space-x-2">
+                  <span className="text-gray-800 font-semibold text-lg">
+                    로그아웃
                   </span>
-                </button>
-              </div>
-            </Link>
+                  <span className="text-gray-600">🚪</span>
+                </span>
+              </button>
+            ) : (
+              // ✅ 비로그인 상태일 때 로그인/회원가입 버튼
+              <Link href="/auth">
+                <div className="group relative inline-block">
+                  <div className="absolute -inset-1 bg-gradient-to-r from-green-600 to-blue-600 rounded-full blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
+                  <button className="relative px-12 py-4 bg-white rounded-full leading-none flex items-center divide-x divide-gray-600">
+                    <span className="flex items-center space-x-2">
+                      <span className="text-gray-800 font-semibold text-lg">
+                        로그인/회원가입
+                      </span>
+                      <span className="text-gray-600">🔑</span>
+                    </span>
+                  </button>
+                </div>
+              </Link>
+            )}
           </div>
 
           {/* 하단 장식 */}
