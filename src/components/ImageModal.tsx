@@ -137,18 +137,10 @@ export default function ImageModal({
           </div>
 
           {/* 메타 정보 */}
-          <div className="flex items-center justify-between text-sm text-gray-500 border-t pt-4">
+          <div className="flex items-center text-sm text-gray-500 border-t pt-4">
             <div className="flex items-center space-x-4">
               <span>📸 {post.author || '익명'}</span>
               <span>📅 {formatDate(post.created_at)}</span>
-            </div>
-            
-            {/* 키보드 단축키 안내 */}
-            <div className="text-xs text-gray-400">
-              {hasMultipleImages && (
-                <span>← → 키로 이미지 이동</span>
-              )}
-              <span className="ml-2">ESC로 닫기</span>
             </div>
           </div>
         </div>

@@ -25,7 +25,7 @@ export default function Home() {
               여름 여행
             </span>
             <br />
-            <span className="text-4xl md:text-6xl">with 피아누스</span>
+            <span className="text-4xl md:text-6xl">with 친구들</span>
           </h1>
 
           {/* 부제목 */}
